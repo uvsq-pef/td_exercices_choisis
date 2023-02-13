@@ -18,6 +18,17 @@ pub fn average_rank(songs: &Vec<Song>) -> f64 {
     sum_ranks as f64 / songs.len() as f64
 }
 
+pub fn average_rank_alt(songs: &Vec<Song>) -> f64 {
+    if songs.is_empty() {
+        panic!("No songs provided!");
+    }
+
+    // Avec fold :
+    //songs.iter().fold(0, |acc, s| acc + s.rank) as f64 / songs.len() as f64
+    // Avec map + sum :
+    songs.iter().map(|s| s.rank).sum::<u32>() as f64 / songs.len() as f64
+}
+
 /// Filtre les morceaux dans `songs` et ne garde que ceux dont la note est
 /// strictement supérieure à `rank_min`.
 pub fn filter_songs(songs: Vec<Song>, rank_min: u32) -> Vec<Song> {
@@ -64,17 +75,26 @@ mod tests {
             rank: 4,
             title: String::from("Stairway to Heaven"),
         }];
+        const MEAN: f64 = 4.0;
+
         let m = average_rank(&sgs);
-        assert_eq!(m, 4.0);
+        assert_eq!(m, MEAN);
+
+        let m_alt = average_rank_alt(&sgs);
+        assert_eq!(m_alt, MEAN);
     }
 
     #[test]
     fn moyenne_plusieurs_morceau() {
         let sgs = example();
         const EPSILON: f64 = 1E-8;
-        const AVERAGE: f64 = 3.666666666;
+        const MEAN: f64 = 3.666666666;
+
         let m = average_rank(&sgs);
-        assert!((m - AVERAGE).abs() < EPSILON);
+        assert!((m - MEAN).abs() < EPSILON);
+
+        let m_alt = average_rank_alt(&sgs);
+        assert!((m_alt - MEAN).abs() < EPSILON);
     }
 
     #[test]
