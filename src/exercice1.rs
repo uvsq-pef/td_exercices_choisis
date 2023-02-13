@@ -32,7 +32,17 @@ pub fn average_rank_alt(songs: &Vec<Song>) -> f64 {
 /// Filtre les morceaux dans `songs` et ne garde que ceux dont la note est
 /// strictement supérieure à `rank_min`.
 pub fn filter_songs(songs: Vec<Song>, rank_min: u32) -> Vec<Song> {
-    panic!("Not implemented!")
+    let mut best: Vec<Song> = Vec::new();
+    for song in songs {
+        if song.rank > rank_min {
+            best.push(song)
+        }
+    }
+    best
+}
+
+pub fn filter_songs_alt(songs: Vec<Song>, rank_min: u32) -> Vec<Song> {
+    songs.into_iter().filter(|s| s.rank > rank_min).collect()
 }
 
 /// Filtre les morceaux dans `songs` pour ne conserver que ceux dont la note
@@ -104,6 +114,12 @@ mod tests {
         assert!(f.len() == 1);
         assert_eq!(f[0].rank, 5);
         assert_eq!(f[0].title, "Nigerian Marketplace");
+
+        let sgs = example();
+        let f_alt = filter_songs_alt(sgs, 4);
+        assert!(f_alt.len() == 1);
+        assert_eq!(f_alt[0].rank, 5);
+        assert_eq!(f_alt[0].title, "Nigerian Marketplace");
     }
 
     #[test]
