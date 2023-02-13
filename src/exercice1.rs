@@ -48,7 +48,8 @@ pub fn filter_songs_alt(songs: Vec<Song>, rank_min: u32) -> Vec<Song> {
 /// Filtre les morceaux dans `songs` pour ne conserver que ceux dont la note
 /// est strictement supérieure à la moyenne.
 pub fn good_songs(songs: Vec<Song>) -> Vec<Song> {
-    panic!("Not implemented!")
+    let avg: f64 = average_rank_alt(&songs);
+    filter_songs_alt(songs, avg.trunc() as u32)
 }
 
 #[cfg(test)]
