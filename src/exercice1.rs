@@ -6,7 +6,16 @@ pub struct Song {
 
 /// Retourne la note moyenne d'un ensemble de morceaux.
 pub fn average_rank(songs: &Vec<Song>) -> f64 {
-    panic!("Not implemented!")
+    if songs.is_empty() {
+        panic!("No songs provided!");
+    }
+
+    let mut sum_ranks: u32 = 0;
+    for song in songs {
+        sum_ranks += song.rank;
+    }
+
+    sum_ranks as f64 / songs.len() as f64
 }
 
 /// Filtre les morceaux dans `songs` et ne garde que ceux dont la note est
@@ -62,8 +71,10 @@ mod tests {
     #[test]
     fn moyenne_plusieurs_morceau() {
         let sgs = example();
+        const EPSILON: f64 = 1E-8;
+        const AVERAGE: f64 = 3.666666666;
         let m = average_rank(&sgs);
-        assert!((m - 3.66666).abs() < 0.001);
+        assert!((m - AVERAGE).abs() < EPSILON);
     }
 
     #[test]
