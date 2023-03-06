@@ -4,7 +4,7 @@
 /// # Exemple
 /// ```
 /// let r = td_exercices_choisis::exercice2::sieve(7);
-/// assert_eq!(r, vec![2, 3, 5, 7])
+/// assert_eq!(r, vec![1, 2, 3, 5, 7])
 /// ```
 pub fn sieve(n: u32) -> Vec<u32> {
     let n = n as usize;
