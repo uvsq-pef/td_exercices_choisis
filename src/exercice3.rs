@@ -29,7 +29,10 @@ pub enum Token {
 /// assert_eq!(r, Ok(7));
 /// ```
 pub fn compute(input: &[Token]) -> Result<i32, ComputeError> {
-    panic!("Not implemented!");
+    if input.is_empty() {
+        return Err(ComputeError::EmptyStack);
+    }
+    Err(ComputeError::EmptyStack)
 }
 
 #[cfg(test)]
@@ -40,6 +43,7 @@ mod tests {
         let r = compute(&[]);
         assert_eq!(r, Err(ComputeError::EmptyStack));
     }
+
     #[test]
     fn just_a_number() {
         let r = compute(&[Token::Number(5)]);
