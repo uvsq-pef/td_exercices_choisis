@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq)]
 pub enum ComputeError {
     DivisionByZero,
-    EmptyStack,
+    MalformedExpression,
 }
 
 #[derive(Debug)]
@@ -45,13 +45,16 @@ pub fn compute(input: &[Token]) -> Result<i32, ComputeError> {
         match token {
             Token::Number(n) => stack.push(*n),
             Token::Op(o) => {
-                let b = stack.pop().ok_or(ComputeError::EmptyStack)?;
-                let a = stack.pop().ok_or(ComputeError::EmptyStack)?;
+                let b = stack.pop().ok_or(ComputeError::MalformedExpression)?;
+                let a = stack.pop().ok_or(ComputeError::MalformedExpression)?;
                 stack.push(o.eval(a, b).ok_or(ComputeError::DivisionByZero)?);
             }
         }
     }
-    stack.pop().ok_or(ComputeError::EmptyStack)
+    if stack.len() > 1 {
+        return Err(ComputeError::MalformedExpression);
+    }
+    stack.pop().ok_or(ComputeError::MalformedExpression)
 }
 
 #[cfg(test)]
@@ -60,7 +63,7 @@ mod tests {
     #[test]
     fn empty() {
         let r = compute(&[]);
-        assert_eq!(r, Err(ComputeError::EmptyStack));
+        assert_eq!(r, Err(ComputeError::MalformedExpression));
     }
 
     #[test]
@@ -136,8 +139,19 @@ mod tests {
     }
 
     #[test]
+    fn malformed_expression() {
+        let r = compute(&[
+            Token::Number(1),
+            Token::Number(2),
+            Token::Number(3),
+            Token::Op(Operator::Plus),
+        ]);
+        assert_eq!(r, Err(ComputeError::MalformedExpression));
+    }
+
+    #[test]
     fn stack_underflow() {
         let r = compute(&[Token::Number(4), Token::Op(Operator::Minus)]);
-        assert_eq!(r, Err(ComputeError::EmptyStack));
+        assert_eq!(r, Err(ComputeError::MalformedExpression));
     }
 }
