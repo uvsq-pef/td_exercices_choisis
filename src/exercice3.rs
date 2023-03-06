@@ -12,6 +12,17 @@ pub enum Operator {
     Divide,
 }
 
+impl Operator {
+    fn eval(&self, lhs: i32, rhs: i32) -> Option<i32> {
+        match self {
+            Operator::Plus => Some(lhs + rhs),
+            Operator::Minus => Some(lhs - rhs),
+            Operator::Times => Some(lhs * rhs),
+            Operator::Divide => lhs.checked_div(rhs),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum Token {
     Number(i32),
@@ -36,14 +47,7 @@ pub fn compute(input: &[Token]) -> Result<i32, ComputeError> {
             Token::Op(o) => {
                 let b = stack.pop().ok_or(ComputeError::EmptyStack)?;
                 let a = stack.pop().ok_or(ComputeError::EmptyStack)?;
-                let res = match o {
-                    Operator::Plus => a + b,
-                    Operator::Minus => a - b,
-                    Operator::Times => a * b,
-                    Operator::Divide => a.checked_div(b).ok_or(ComputeError::DivisionByZero)?,
-                };
-
-                stack.push(res);
+                stack.push(o.eval(a, b).ok_or(ComputeError::DivisionByZero)?);
             }
         }
     }
