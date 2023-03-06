@@ -29,10 +29,16 @@ pub enum Token {
 /// assert_eq!(r, Ok(7));
 /// ```
 pub fn compute(input: &[Token]) -> Result<i32, ComputeError> {
-    if input.is_empty() {
-        return Err(ComputeError::EmptyStack);
+    let mut stack: Vec<i32> = Vec::new();
+    for token in input {
+        match token {
+            Token::Number(n) => stack.push(*n),
+            Token::Op(o) => {
+                panic!("Not implemented!");
+            }
+        }
     }
-    Err(ComputeError::EmptyStack)
+    stack.pop().ok_or(ComputeError::EmptyStack)
 }
 
 #[cfg(test)]
