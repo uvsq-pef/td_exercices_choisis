@@ -34,7 +34,16 @@ pub fn compute(input: &[Token]) -> Result<i32, ComputeError> {
         match token {
             Token::Number(n) => stack.push(*n),
             Token::Op(o) => {
-                panic!("Not implemented!");
+                let b = stack.pop().ok_or(ComputeError::EmptyStack)?;
+                let a = stack.pop().ok_or(ComputeError::EmptyStack)?;
+                let res = match o {
+                    Operator::Plus => a + b,
+                    Operator::Minus => a - b,
+                    Operator::Times => a * b,
+                    Operator::Divide => a.checked_div(b).ok_or(ComputeError::DivisionByZero)?,
+                };
+
+                stack.push(res);
             }
         }
     }
